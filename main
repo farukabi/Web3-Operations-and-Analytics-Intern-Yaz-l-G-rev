@@ -1,0 +1,77 @@
+// Gerekli modülleri içe aktar
+import Debug "mo:base/Debug";
+import Int "mo:base/Int";
+
+// HesapMakinesi actor'ü
+actor HesapMakinesi {
+    // Hesaplama sonucu saklamak için bir değişken
+    var sonuc : Int = 0;
+    
+    // Toplama işlemi
+    public func toplama(sayi : Int) : async Int {
+        sonuc += sayi;
+        return sonuc;
+    };
+    
+    // Çıkarma işlemi
+    public func cikarma(sayi : Int) : async Int {
+        sonuc -= sayi;
+        return sonuc;
+    };
+    
+    // Çarpma işlemi
+    public func carpma(sayi : Int) : async Int {
+        sonuc *= sayi;
+        return sonuc;
+    };
+    
+    // Bölme işlemi
+    public func bolme(sayi : Int) : async ?Int {
+        if (sayi == 0) {
+            // Hata mesajı yazdırmak için `Debug.print` kullanabiliriz
+            Debug.print("Hata: 0'a bölme yapılamaz");
+            return null;
+        };
+        sonuc /= sayi;
+        return ?sonuc;
+    };
+    
+    // Sonucu sıfırlama
+    public func sifirla() : async () {
+        sonuc := 0;
+    };
+    
+    // Sonucu elde etme
+    public func mevcutSonuc() : async Int {
+        return sonuc;
+    };
+    
+    // Hesap Makinesi'ni kullanma örneği
+    public func hesapMakinesiOrnegi() : async () {
+        // Toplama işlemi
+        let toplamSonuc = await toplama(10);
+        Debug.print("Toplama Sonucu: " # Int.toText(toplamSonuc)); // 10
+        
+        // Çıkarma işlemi
+        let cikarmaSonuc = await cikarma(5);
+        Debug.print("Çıkarma Sonucu: " # Int.toText(cikarmaSonuc)); // 5
+        
+        // Çarpma işlemi
+        let carpmaSonuc = await carpma(3);
+        Debug.print("Çarpma Sonucu: " # Int.toText(carpmaSonuc)); // 15
+        
+        // Bölme işlemi
+        switch (await bolme(3)) {
+            case (?bolmeSonuc) {
+                Debug.print("Bölme Sonucu: " # Int.toText(bolmeSonuc)); // 5
+            };
+            case null {
+                Debug.print("Bölme işlemi başarısız.");
+            };
+        };
+        
+        // Sonucu sıfırlama
+        await sifirla();
+        Debug.print("Sonuç sıfırlandı. Mevcut Sonuç: " # Int.toText(await mevcutSonuc())); // 0
+    };
+};
